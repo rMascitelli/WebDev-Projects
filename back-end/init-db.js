@@ -18,8 +18,8 @@ db.serialize(() => {
 													timestamp CHAR, \
 													source TEXT, destination TEXT)");
 
-	// Generate 100 random flights for the DB to store
-	for(var i = 0; i < 100; i++) {
+	// Generate 300 random flights for the DB to store
+	for(var i = 0; i < 300; i++) {
 		// Generate 2 random numbers to simulate a "flight"
 		var rand1 = Math.floor(Math.random() * cities.length);
 		var rand2 = Math.floor(Math.random() * cities.length);
@@ -29,12 +29,6 @@ db.serialize(() => {
 	}
 
 	console.log("Finished writing 100 new entries...");
-
-	// // Read back the DB for debugging purposes
-	db.each("SELECT * FROM flight_info", function(err, row) {
-	    console.log(row.id + ": " + "[" + row.timestamp + "] " + row.source + " -> " + row.destination);
-	});
 });
-
  
 db.close();
