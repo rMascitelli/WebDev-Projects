@@ -9,27 +9,33 @@ const url = `${config.base_url}:${config.port}/`;
 
 function FlightInfo(props) {
   return(
-    <li> Flight #{props.count} - {props.value} </li>
+    <li> Flight #{props.id} - {props.src} -> {props.dest} </li>
     );
 }
 
 // Function component for controls
 function FlightControls(props) {
   return (
-    <div className="controls">
-      <button onClick={props.add}> Add Flight </button>
-      <button onClick={props.remove}> Remove Flight </button>
-      <button onClick={props.update}> Update Flights </button>
+    <div className="flightControls">
+      <div className="add_remove">
+        <button onClick={props.add}> Add Flight </button>
+        <button onClick={props.remove}> Remove Flight </button>
+      </div>
+      <div className="update">
+        <button onClick={props.update}> Update Flights </button>
+        <label for="num_flights">Number of Flights:</label>
+        <input onChange={props.onChange} type="text" id="num_flights" name="num_flights"></input>
+      </div>
     </div>
   );
 }
 
-function FlightList({cities}) {
+function FlightList({flights}) {
   return(
     <div>
       <ul>
         { 
-          cities.map((city, i) => <FlightInfo count={i+1} value={city} />)
+          flights.map((flight, i) => <FlightInfo id={flight.id} src={flight.source} dest={flight.destination} />)
         }
       </ul>
     </div>
@@ -43,7 +49,7 @@ class Airport extends React.Component {
     super(props);
     this.state = {
       count: 0,
-      cities: ["Toronto", "Amsterdam", "Paris", "Barcelona", "Los Angeles", "Saskatoon"],
+      flights: null,
     }
   }
 
@@ -67,36 +73,45 @@ class Airport extends React.Component {
 
   updateCall = () => {
     axios.get(`${config.base_url}:${config.port}/`, {
+      // No parameters necessary right now
       params: {
-      },
-      baseURL: `${config.base_url}`
+        num_flights: this.state.count,
+      }
     })
     .then((response) => {
-      console.log(`Sending response to ${config.base_url}`);
       console.log(response);
+      this.setState({
+        flights: response.data,
+      });
     })
     .catch((error) => {
-      console.log(`Sending response to ${config.base_url}`);
+      console.log("ERROR getting response");
       console.log(error);
     })
     .finally(() => {
-      console.log(`Sending response to ${config.base_url}`);
       // always executed
     }); 
   }
 
+  onChange = (event) => {
+    this.setState({
+      count: event.target.value,
+    });
+  }
+
   render() {
-    const { cities, count } = this.state;
+    const { count, flights } = this.state;
+    console.log(`Count = ${count}`);
 
     return (
       <div className="AirportApp">
         <div className="flight-table">
             <p> FLIGHT INFO </p>
-            <FlightList cities={cities.slice(0, count+1)}/>
+            {flights && <FlightList flights={flights}/>}
         </div>
         <div className="table-controls">
             <p> FLIGHT CONTROLS </p>
-            <FlightControls add={this.incrementCount} remove={this.decrementCount} update={this.updateCall}/>
+            <FlightControls add={this.incrementCount} remove={this.decrementCount} update={this.updateCall} onChange={this.onChange} />
         </div>
       </div>
     );
