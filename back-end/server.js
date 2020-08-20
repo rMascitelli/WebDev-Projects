@@ -1,11 +1,12 @@
-//const http = require('http');
+// Get Dependencies
 const express = require('express');
 const app = express();
-var cors = require('cors')
+const cors = require('cors');
 
+// Setup CORS
 app.use(cors())
 
-console.log("Starting server from test.js");
+console.log("Starting server from server.js");
 
 app.get('/', (req, res) => {
 	res.send('Hello World: /');
