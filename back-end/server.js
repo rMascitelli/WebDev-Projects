@@ -1,18 +1,19 @@
 // Get Dependencies
 const express = require('express');
 const app = express();
+const mongo = require('mongodb');
 const cors = require('cors');
 var sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const dbPath = path.resolve(__dirname, 'flight-info.db');
+const sql = path.resolve(__dirname, 'flight-info.db');
 
 // Open and confirm DB connection
-let db = new sqlite3.Database(dbPath, (err) => {
+let db = new sqlite3.Database(sql, (err) => {
     if (err) {
-    	console.log(dbPath);
+    	console.log(sql);
         return console.error(err.message);
     } else {
-        console.log('Connected to the Item database.');
+        console.log('Connected to SQL Database ... ');
     }
 });
 
@@ -47,7 +48,7 @@ app.get('/', (req, res) => {
 			//console.log(myJSON);
 		});
 		
-		console.log(`\n## Sending flight info - Row${rand} - ${max_val}`);
+		console.log(`## Sending flight info - Row${rand} - ${max_val}`);
 	});
 });
 
